@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Birthday Gallery</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <style>
+    /* LOADING SCREEN */
+    .loading-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      cursor: pointer;
+      transition: opacity 1s ease, visibility 1s ease;
+      padding: 20px;
+    }
+    .loading-screen.hide { opacity: 0; visibility: hidden; }
+    .cake {
+      position: relative;
+      width: min(300px, 70vw);
+      height: min(300px, 70vw);
+      margin-bottom: clamp(20px, 5vw, 50px);
+      animation: cakeFloat 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes cakeFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .cake-bottom {
+      position: absolute; bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 66%; height: 20%;
+      background: #8B4513; border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .cake-middle {
+      position: absolute; bottom: 19%; left: 50%;
+      transform: translateX(-50%);
+      width: 56%; height: 17%;
+      background: #D2691E; border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .cake-top {
+      position: absolute; bottom: 35%; left: 50%;
+      transform: translateX(-50%);
+      width: 46%; height: 15%;
+      background: #F4A460; border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .cream {
+      position: absolute; bottom: 48%; left: 50%;
+      transform: translateX(-50%);
+      width: 50%; height: 7%;
+      background: #FFFAF0; border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+    .candle {
+      position: absolute; bottom: 52%; left: 50%;
+      transform: translateX(-50%);
+      width: 4%; height: 14%; min-width: 8px;
+      background: linear-gradient(135deg, #FF6B6B, #FF4757);
+      border-radius: 3px;
+      animation: candleFlicker 0.3s ease-in-out infinite alternate;
+    }
+    @keyframes candleFlicker {
+      0% { opacity: 1; transform: translateX(-50%) scale(1); }
+      100% { opacity: 0.8; transform: translateX(-50%) scale(0.98); }
+    }
+    .flame {
+      position: absolute; bottom: 64%; left: 50%;
+      transform: translateX(-50%);
+      width: 6%; height: 9%; min-width: 12px; min-height: 16px;
+      background: radial-gradient(circle, #FFD700, #FF8C00, #FF4500);
+      border-radius: 50%;
+      animation: flameFlicker 0.2s ease-in-out infinite alternate;
+      box-shadow: 0 0 20px #FF8C00;
+    }
+    @keyframes flameFlicker {
+      0% { transform: translateX(-50%) scale(1); }
+      100% { transform: translateX(-50%) scale(1.1); }
+    }
+    .sprinkle { position: absolute; width: 6px; height: 6px; background: #FF69B4; border-radius: 50%; }
+    .sprinkle:nth-child(1) { top: 38%; left: 14%; background: #FF69B4; }
+    .sprinkle:nth-child(2) { top: 40%; left: 28%; background: #FFD700; }
+    .sprinkle:nth-child(3) { top: 36%; left: 45%; background: #32CD32; }
+    .sprinkle:nth-child(4) { top: 41%; left: 60%; background: #FF69B4; }
+    .sprinkle:nth-child(5) { top: 37%; left: 35%; background: #87CEEB; }
+    .sprinkle:nth-child(6) { top: 39%; left: 52%; background: #FFD700; }
+    .sprinkle:nth-child(7) { top: 42%; left: 68%; background: #32CD32; }
+    .click-text {
+      color: white;
+      font-size: clamp(14px, 4vw, 20px);
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: 2px; margin-top: 20px;
+      animation: textPulse 1.5s ease-in-out infinite;
+      background: rgba(255,180,71,0.2);
+      padding: clamp(8px, 2vw, 12px) clamp(16px, 5vw, 30px);
+      border-radius: 50px;
+      border: 1px solid rgba(255,180,71,0.5);
+      backdrop-filter: blur(5px); text-align: center;
+    }
+    @keyframes textPulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    .loading-stars {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden; pointer-events: none;
+    }
+    .star {
+      position: absolute; background: white;
+      border-radius: 50%; opacity: 0;
+      animation: starTwinkle 2s ease-in-out infinite;
+    }
+    @keyframes starTwinkle {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 0.8; transform: scale(1); }
+    }
+    .main-content { opacity: 0; visibility: hidden; transition: opacity 1.5s ease, visibility 1.5s ease; }
+    .main-content.show { opacity: 1; visibility: visible; }
+
+    /* ============================================
+       SECTION 6 - TO LOVE
+    ============================================ */
+    .tolove-section {
+      position: relative; width: 100%; min-height: 100vh;
+      background: #e8e4dc; display: flex; align-items: stretch; overflow: hidden;
+    }
+    .tolove-bokeh { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .bokeh-dot {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,220,150,0.6), transparent 70%);
+      animation: bokehFloat linear infinite; filter: blur(2px);
+    }
+    @keyframes bokehFloat {
+      0%   { transform: translateY(0) scale(1); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
+    }
+    .tolove-light-beam {
+      position: absolute; top: 0; left: 0; width: 55%; height: 100%;
+      background: linear-gradient(135deg, rgba(255,240,200,0.18) 0%, transparent 60%);
+      pointer-events: none; z-index: 1;
+      animation: beamPulse 6s ease-in-out infinite;
+    }
+    @keyframes beamPulse { 0%,100% { opacity: 0.6; } 50% { opacity: 1; } }
+    .tolove-left { position: relative; width: 55%; min-height: 100vh; flex-shrink: 0; overflow: hidden; }
+    .tolove-photo-wrap { position: absolute; inset: 0; overflow: hidden; }
+    .tolove-photo {
+      width: 100%; height: 100%; object-fit: cover; object-position: center top;
+      filter: brightness(60%) contrast(1.1) grayscale(20%);
+      transform: scale(1.05);
+      animation: photoZoomIn 1.6s ease-out forwards, photoKenBurns 20s ease-in-out 2s infinite alternate;
+      opacity: 0;
+    }
+    @keyframes photoZoomIn {
+      from { opacity: 0; transform: scale(1.15); filter: brightness(0%) contrast(1) grayscale(20%); }
+      to   { opacity: 1; transform: scale(1.05); filter: brightness(60%) contrast(1.1) grayscale(20%); }
+    }
+    @keyframes photoKenBurns {
+      from { transform: scale(1.05) translateX(0); }
+      to   { transform: scale(1.10) translateX(-10px); }
+    }
+    .tolove-photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(232,228,220,0.85) 100%),
+                  linear-gradient(to bottom, rgba(0,0,0,0) 60%, rgba(232,228,220,0.7) 100%);
+      z-index: 1;
+    }
+    .tolove-age {
+      position: absolute; bottom: 12%; right: -2%; z-index: 3;
+      line-height: 1; display: flex; align-items: flex-end;
+      opacity: 0;
+      animation: ageReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 0.8s;
+    }
+    @keyframes ageReveal {
+      from { opacity: 0; transform: translateY(40px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .age-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(100px, 18vw, 220px); font-weight: 300;
+      color: rgba(255,255,255,0.92); letter-spacing: -6px;
+      text-shadow: 0 0 60px rgba(255,220,150,0.4), 0 4px 30px rgba(0,0,0,0.3);
+      line-height: 0.88; position: relative; display: inline-block;
+    }
+    .age-number::after {
+      content: ''; position: absolute; top: 8%; left: 52%;
+      width: 4px; height: 88%;
+      background: rgba(255,255,255,0.7);
+      transform: rotate(22deg) translateX(-50%); transform-origin: top center;
+      border-radius: 2px; box-shadow: 0 0 10px rgba(255,220,150,0.5);
+    }
+    .age-th {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(40px, 6vw, 80px); font-weight: 300; font-style: italic;
+      color: rgba(255,255,255,0.85); margin-left: 4px;
+      margin-bottom: clamp(12px, 2vw, 24px);
+      text-shadow: 0 0 20px rgba(255,220,150,0.4);
+      animation: thFloat 3s ease-in-out infinite; animation-delay: 2s;
+    }
+    @keyframes thFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .tolove-name {
+      position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%);
+      z-index: 3; font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(14px, 2vw, 22px); font-style: italic; font-weight: 400;
+      color: rgba(255,255,255,0.75); letter-spacing: 3px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3); white-space: nowrap;
+      opacity: 0;
+      animation: nameSlideUp 1.2s ease-out forwards; animation-delay: 1.6s;
+    }
+    @keyframes nameSlideUp {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    .tolove-right {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: clamp(40px, 6vw, 90px) clamp(30px, 5vw, 70px) clamp(40px, 6vw, 90px) clamp(20px, 3vw, 40px);
+      position: relative; z-index: 2; background: transparent;
+    }
+    .tolove-title-wrap {
+      display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px;
+      opacity: 0;
+      animation: titleFadeRight 1.2s ease-out forwards; animation-delay: 0.4s;
+    }
+    @keyframes titleFadeRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .tolove-to {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 68px); font-weight: 300; font-style: italic;
+      color: #1a1a1a; letter-spacing: 2px;
+    }
+    .tolove-love {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 7vw, 90px); font-weight: 300; font-style: italic;
+      color: #1a1a1a; letter-spacing: -1px; position: relative;
+    }
+    .tolove-love::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background: #1a1a1a;
+      animation: underlineGrow 1s ease-out forwards; animation-delay: 1.2s;
+    }
+    @keyframes underlineGrow { to { width: 100%; } }
+    .tolove-line {
+      width: 0; height: 1px; background: rgba(26,26,26,0.25); margin-bottom: 28px;
+      animation: lineExpand 1s ease-out forwards; animation-delay: 1s;
+    }
+    @keyframes lineExpand { to { width: 80px; } }
+    .tolove-messages { display: flex; flex-direction: column; gap: 18px; }
+    .tolove-p {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(11px, 1.1vw, 14px); line-height: 1.85; color: #2a2a2a;
+      opacity: 0; transform: translateY(20px);
+      animation: paraReveal 0.9s ease-out forwards;
+    }
+    .tolove-p[data-delay="0"] { animation-delay: 1.2s; }
+    .tolove-p[data-delay="1"] { animation-delay: 1.5s; }
+    .tolove-p[data-delay="2"] { animation-delay: 1.8s; }
+    @keyframes paraReveal {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .tolove-stars-deco {
+      margin-top: 30px; font-size: 16px; letter-spacing: 12px; color: #aaa;
+      opacity: 0;
+      animation: paraReveal 1s ease-out forwards; animation-delay: 2.2s;
+    }
+    @media (max-width: 900px) {
+      .tolove-left  { width: 48%; }
+      .age-number   { font-size: clamp(80px, 15vw, 140px); }
+      .tolove-right { padding: 50px 30px; }
+    }
+    @media (max-width: 768px) {
+      .tolove-section { flex-direction: column; min-height: auto; }
+      .tolove-left { width: 100%; height: 60vw; min-height: 280px; max-height: 400px; }
+      .tolove-photo-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(232,228,220,0.9) 100%); }
+      .tolove-age { bottom: 5%; right: 4%; }
+      .age-number { font-size: clamp(70px, 20vw, 120px); }
+      .age-th     { font-size: clamp(28px, 8vw, 50px); }
+      .tolove-right { padding: 36px 24px 48px; }
+      .tolove-title-wrap { margin-bottom: 14px; }
+      .tolove-to   { font-size: clamp(30px, 8vw, 52px); }
+      .tolove-love { font-size: clamp(40px, 11vw, 70px); }
+      .tolove-p    { font-size: 13px; }
+    }
+    @media (max-width: 480px) {
+      .tolove-left { height: 75vw; min-height: 240px; }
+      .age-number  { font-size: clamp(60px, 24vw, 100px); letter-spacing: -3px; }
+      .age-th      { font-size: clamp(24px, 9vw, 40px); }
+      .tolove-name { font-size: 13px; letter-spacing: 2px; }
+      .tolove-right { padding: 28px 18px 40px; }
+      .tolove-p    { font-size: 12px; line-height: 1.75; }
+    }
+
+    /* ============================================
+       SECTION 7 - CLOSING CINEMATIC
+    ============================================ */
+
+    .closing-section {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    /* Foto background full screen */
+    .closing-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transform: scale(1.08);
+      filter: brightness(55%) contrast(1.05);
+      animation: closingKenBurns 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes closingKenBurns {
+      0%   { transform: scale(1.08) translateX(0) translateY(0); filter: brightness(55%) contrast(1.05); }
+      100% { transform: scale(1.14) translateX(-15px) translateY(-8px); filter: brightness(62%) contrast(1.08); }
+    }
+
+    /* Layer gelap sinematik — lebih gelap di tepi, terang di tengah-kiri */
+    .closing-vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 35% 50%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.55) 100%),
+        linear-gradient(to right, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.5) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.6) 100%);
+      z-index: 1;
+    }
+
+    /* Partikel cahaya melayang */
+    .closing-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .closing-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 220, 180, 0.7);
+      filter: blur(1px);
+      animation: particleDrift linear infinite;
+    }
+
+    @keyframes particleDrift {
+      0%   { transform: translateY(110vh) translateX(0) scale(0.5); opacity: 0; }
+      10%  { opacity: 1; }
+      50%  { transform: translateY(50vh) translateX(20px) scale(1); opacity: 0.8; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) translateX(-10px) scale(0.8); opacity: 0; }
+    }
+
+    /* Garis horizontal tipis dekoratif — seperti letterbox cinema */
+    .closing-bar-top,
+    .closing-bar-bottom {
+      position: absolute;
+      left: 0; right: 0;
+      height: 0;
+      background: black;
+      z-index: 3;
+      animation: barReveal 1.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+    }
+    .closing-bar-top    { top: 0;    animation-delay: 0s; }
+    .closing-bar-bottom { bottom: 0; animation-delay: 0s; }
+
+    @keyframes barReveal {
+      0%   { height: 80px; }
+      100% { height: 0px; }
+    }
+
+    /* Konten teks utama */
+    .closing-content {
+      position: relative;
+      z-index: 4;
+      padding: 0 clamp(30px, 8vw, 120px);
+      max-width: 900px;
+    }
+
+    /* Tanggal kecil di atas — muncul pertama */
+    .closing-date {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(10px, 1.2vw, 13px);
+      font-weight: 400;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(255, 220, 150, 0.85);
+      margin-bottom: clamp(12px, 2vh, 24px);
+      opacity: 0;
+      animation: closingFadeUp 1s ease-out forwards;
+      animation-delay: 1s;
+    }
+
+    /* Judul utama "Happy Birthday!!" */
+    .closing-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 10vw, 130px);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.0;
+      color: white;
+      letter-spacing: -1px;
+      opacity: 0;
+      text-shadow: 0 4px 40px rgba(0,0,0,0.5);
+      animation: closingTitleReveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: 1.3s;
+      /* Masking effect — teks slide dari bawah */
+      clip-path: inset(0 0 100% 0);
+    }
+
+    @keyframes closingTitleReveal {
+      0%   { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(30px); }
+      20%  { opacity: 1; }
+      100% { opacity: 1; clip-path: inset(0 0 0% 0); transform: translateY(0); }
+    }
+
+    /* Nama italic kecil */
+    .closing-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(16px, 2.5vw, 30px);
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: 3px;
+      margin-top: clamp(8px, 1.5vh, 18px);
+      opacity: 0;
+      animation: closingFadeUp 1s ease-out forwards;
+      animation-delay: 2s;
+    }
+
+    /* Garis pendek setelah nama */
+    .closing-divider {
+      width: 0;
+      height: 1px;
+      background: rgba(255, 220, 150, 0.6);
+      margin-top: clamp(16px, 2.5vh, 28px);
+      animation: closingLineGrow 1.2s ease-out forwards;
+      animation-delay: 2.4s;
+    }
+
+    @keyframes closingLineGrow {
+      to { width: clamp(60px, 10vw, 120px); }
+    }
+
+    /* Sub-teks kecil di bawah garis */
+    .closing-sub {
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(10px, 1vw, 12px);
+      font-weight: 300;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: clamp(12px, 2vh, 20px);
+      opacity: 0;
+      animation: closingFadeUp 1s ease-out forwards;
+      animation-delay: 2.8s;
+    }
+
+    @keyframes closingFadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Overlay cahaya yang berdenyut pelan di belakang teks */
+    .closing-glow {
+      position: absolute;
+      top: 50%;
+      left: clamp(20px, 6vw, 80px);
+      transform: translateY(-50%);
+      width: clamp(200px, 50vw, 600px);
+      height: clamp(200px, 50vh, 500px);
+      background: radial-gradient(ellipse, rgba(255, 180, 71, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 3;
+      animation: closingGlowPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes closingGlowPulse {
+      0%,100% { opacity: 0.6; transform: translateY(-50%) scale(1); }
+      50%     { opacity: 1;   transform: translateY(-50%) scale(1.1); }
+    }
+
+    /* Efek grain/film tipis di atas semua */
+    .closing-grain {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      animation: grainShift 0.15s steps(1) infinite;
+    }
+
+    @keyframes grainShift {
+      0%   { background-position: 0 0; }
+      25%  { background-position: -30px 20px; }
+      50%  { background-position: 10px -40px; }
+      75%  { background-position: -20px 30px; }
+      100% { background-position: 40px -10px; }
+    }
+
+    /* Titik cahaya pojok kanan bawah */
+    .closing-corner-light {
+      position: absolute;
+      bottom: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,200,100,0.15) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 2;
+      animation: cornerLightPulse 5s ease-in-out infinite;
+    }
+
+    @keyframes cornerLightPulse {
+      0%,100% { opacity: 0.5; transform: scale(1); }
+      50%     { opacity: 1;   transform: scale(1.2); }
+    }
+
+    /* Responsive section 7 */
+    @media (max-width: 768px) {
+      .closing-content { padding: 0 clamp(24px, 6vw, 50px); }
+      .closing-bar-top, .closing-bar-bottom { animation: barRevealMobile 1.8s cubic-bezier(0.77, 0, 0.175, 1) forwards; }
+      @keyframes barRevealMobile { 0% { height: 50px; } 100% { height: 0; } }
+    }
+    @media (max-width: 480px) {
+      .closing-section { align-items: flex-end; padding-bottom: 10vh; }
+      .closing-content { padding: 0 24px; }
+      .closing-title   { font-size: clamp(44px, 14vw, 80px); }
+      .closing-name    { font-size: clamp(14px, 4.5vw, 22px); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-stars" id="loadingStars"></div>
+    <div class="cake">
+      <div class="cake-bottom"></div>
+      <div class="cake-middle"></div>
+      <div class="cake-top"></div>
+      <div class="cream"></div>
+      <div class="candle"></div>
+      <div class="flame"></div>
+      <div class="sprinkle"></div>
+      <div class="sprinkle"></div>
+      <div class="sprinkle"></div>
+      <div class="sprinkle"></div>
+      <div class="sprinkle"></div>
+      <div class="sprinkle"></div>
+      <div class="sprinkle"></div>
+    </div>
+    <div class="click-text">🎂 Klik di sini untuk mulai 🎂</div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+
+    <section class="hero">
+      <img src="img/kedut2.png" class="bg reveal-img">
+      <div class="dark-layer"></div>
+      <div class="overlay"></div>
+      <div class="content hero-content">
+        <h1>Happy Birthday</h1>
+        <p>Selamat ulang tahun untuk kedutt ❤️<br>Scroll ke bawah yaa dutt ✨</p>
+      </div>
+      <div class="scroll">SCROLL DOWN ↓</div>
+      <div class="birthday-date">Juni 03 2026</div>
+    </section>
+
+    <section class="memory-section">
+      <div class="memory-overlay"></div>
+      <div class="photo-row left">
+        <img src="img/kedut1.png"><img src="img/kedut2.png"><img src="img/kedut1.png"><img src="img/kedut2.png">
+        <img src="img/kedut1.png"><img src="img/kedut2.png"><img src="img/kedut1.png">
+      </div>
+      <div class="photo-row right">
+        <img src="img/kedut1.png"><img src="img/kedut2.png"><img src="img/kedut1.png"><img src="img/kedut2.png">
+        <img src="img/kedut1.png"><img src="img/kedut2.png"><img src="img/kedut1.png">
+      </div>
+      <div class="photo-row left">
+        <img src="img/kedut2.png"><img src="img/kedut1.png"><img src="img/kedut2.png"><img src="img/kedut1.png">
+        <img src="img/kedut2.png"><img src="img/kedut1.png"><img src="img/kedut2.png">
+      </div>
+      <div class="memory-text">
+        <h1>3</h1>
+        <p>things you get when <br> you turn 17 ✨</p>
+      </div>
+    </section>
+
+    <section class="campus-section">
+      <img src="img/sma.png" class="campus-bg">
+      <div class="campus-overlay"></div>
+      <div class="campus-title">
+        <h1><span>3</span> Prayers And Hopes</h1>
+      </div>
+      <div class="campus-card">
+        <h2>HAPPY SWEET SEVENTEEN YAA DUTT✨✨</h2>
+        <p>Selamat ulang tahun yaa 🥳✨ Semoga di umur yang baru ini kamu selalu sehat, bahagia, 
+          dan makin banyak hal baik yang datang ke hidup kamu. Semoga nilai kamu semakin membaik, 
+          semua usaha dan perjuanganmu dilancarkan, serta tahun depan bisa lolos PTN impian yang paling kamu inginkan ya dutt. 
+          Tetap semangat yaa, aku yakin kamu bisa mencapai semua cita-cita kamu. U CAN DO IT DUTT!!! 🤍</p>
+      </div>
+      <div class="person-wrapper">
+        <img src="img/miror.jpeg" class="campus-person">
+      </div>
+    </section>
+
+    <section class="rank-section">
+      <img src="img/kedut2.png" class="rank-bg">
+      <div class="rank-overlay"></div>
+      <div class="rank-container">
+        <div class="rank-content">
+          <h1 class="rank-title">2<br><span class="highlight">Consistency!!</span></h1>
+          <div class="message-wrapper">
+            <div class="message-box">
+              <p class="message-text">
+                "JUJUR INI KEERRREEENNNN<br>
+                SELAAAMAAT YAAW . AKU G KAGET<br>
+                SII III II soalnya kamu selalu konsisten<br>
+                soal nilai HEBAAT I, aku aja turun mulu<br>
+                tiap semester SEDANGKAN KAMU<br>
+                NGGA!!!. fyi kata mama ku kamu hebat<br>
+                karna bisa bertahan"
+              </p>
+            </div>
+            <div class="polaroid-stack">
+              <div class="polaroid polaroid-1"><div class="polaroid-inner"><img src="img/dbl.jpeg" alt="foto 1"></div></div>
+              <div class="polaroid polaroid-2"><div class="polaroid-inner"><img src="img/tari.PNG" alt="foto 2"></div></div>
+              <div class="polaroid polaroid-3"><div class="polaroid-inner"><img src="img/kedut1.png" alt="foto 3"></div></div>
+            </div>
+          </div>
+          <div class="star-divider">✦ ✦ ✦</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5 - EDITORIAL -->
+    <section class="editorial-section">
+      <div class="editorial-inner">
+        <div class="editorial-left">
+          <div class="editorial-heading">
+            <span class="editorial-the">The first</span>
+            <span class="editorial-number-big">1</span>
+            <span class="editorial-on">on my mind</span>
+          </div>
+          <h3 class="editorial-subtitle">HAHHAHAHAH YESS ALWAYSS UU!!</h3>
+          <div class="editorial-body">
+            <p>YAP kamu masih jadi orang yang selalu muncul dipikiran aku selama 2 tahun lebih!!! MAKASIH YAAA UDH ADA BUAT KUUU JUGAA DAN SELALU SUPPORT AKU. aku g akan bosen ngasih tau nya kalau aku bener bener beruntung dapetin kamu, kamu setia nemenin aku apapun keadaannya dan selalu ngertiin kondisi aku, kalau aku pacaran ama cewe lain mungkin aku bakal g sanggup. dan mama aku juga ga banyak komen soal kamu, karna kamu anak nya baik baik, malah suka khawatir kamu dia apa apain sama aku hehehee.</p>
+            <p>maaafyaa aku selalu bikin kamu kecewa dan sedih semoga diumur 18 tahun ini kamu makin bahagia yaaa sama aku, dan semoga hubungan kita tetep berlanjut sampai kuliah dan seterusnya:P</p>
+            <p>DAAN SEMANGAT KULIAH, JANGAN TAKUT AMBIL DKVII U CAN DO IT!! KAMU BISAA semua hal selalu dari 0 jadi jangan minder sama kemampuan orang lain, karna dulu mereka mulai dari 0 kayak kamu!!</p>
+          </div>
+        </div>
+        <div class="editorial-right">
+          <div class="collage-grid">
+            <div class="collage-item c1"><img src="img/kedut1.png" alt="foto"></div>
+            <div class="collage-item c2"><img src="img/kedut2.png" alt="foto"></div>
+            <div class="collage-item c3"><img src="img/dbl.jpeg" alt="foto"></div>
+            <div class="collage-item c4"><img src="img/tari.PNG" alt="foto"></div>
+            <div class="collage-item c5"><img src="img/kedut1.png" alt="foto"></div>
+            <div class="collage-item c6"><img src="img/kedut2.png" alt="foto"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6 - TO LOVE -->
+    <section class="tolove-section">
+      <div class="tolove-bokeh" id="toloveParticles"></div>
+      <div class="tolove-left">
+        <div class="tolove-photo-wrap">
+          <img src="img/kedut2.png" alt="photo" class="tolove-photo">
+          <div class="tolove-photo-overlay"></div>
+        </div>
+        <div class="tolove-age">
+          <span class="age-number">17</span>
+          <span class="age-th">th</span>
+        </div>
+        <div class="tolove-name">Yohana Kristiani Esni Marbun</div>
+      </div>
+      <div class="tolove-right">
+        <div class="tolove-title-wrap">
+          <span class="tolove-to">to</span>
+          <span class="tolove-love">love</span>
+        </div>
+        <div class="tolove-line"></div>
+        <div class="tolove-messages">
+          <p class="tolove-p" data-delay="0">
+            happy 17 th dutt. semoga diumur kamu yang genap 17 tahun kamu semakin dewasa, semakin faham, semakin cantik pintar dan selalu bahagia.
+          </p>
+          <p class="tolove-p" data-delay="1">
+            Aku harap diumur kamu yang bertambah ini itu ini semakin bahagia, terlebih bahagia dengan orang lain tanpa aku juga gapapap, kamu berhak dapat kebahagiaan lebih dari aku.
+          </p>
+          <p class="tolove-p" data-delay="2">
+            Selamat ulang tahun Yohana Kristiani Esni Marbun, semoga rasa sayang kamu ke ak g akan hilang selamanya, dan kita kelak bisa satu rumah dan punya keluarga kecil yang kita dambakan, love u so much dissyaa. Selamat makin dewasa dissyaa!!
+          </p>
+        </div>
+        <div class="tolove-stars-deco">✦ ✧ ✦</div>
+      </div>
+      <div class="tolove-light-beam"></div>
+    </section>
+
+    <!-- SECTION 7 - CLOSING CINEMATIC -->
+    <section class="closing-section">
+
+      <!-- Foto background -->
+      <img src="img/kedut1.png" alt="closing" class="closing-bg">
+
+      <!-- Layer vignette sinematik -->
+      <div class="closing-vignette"></div>
+
+      <!-- Partikel cahaya -->
+      <div class="closing-particles" id="closingParticles"></div>
+
+      <!-- Cahaya glow di belakang teks -->
+      <div class="closing-glow"></div>
+
+      <!-- Bar sinematik atas bawah -->
+      <div class="closing-bar-top"></div>
+      <div class="closing-bar-bottom"></div>
+
+      <!-- Grain film tipis -->
+      <div class="closing-grain"></div>
+
+      <!-- Cahaya pojok kanan bawah -->
+      <div class="closing-corner-light"></div>
+
+      <!-- KONTEN UTAMA -->
+      <div class="closing-content">
+        <div class="closing-date">03 Juni 2026 · Sweet 17</div>
+        <h1 class="closing-title">Happy<br>Birthday!!</h1>
+        <p class="closing-name">Yohana Kristiani Esni Marbun</p>
+        <div class="closing-divider"></div>
+        <p class="closing-sub">with love, always &amp; forever ❤️</p>
+      </div>
+
+    </section>
+
+    <audio id="bg-music" loop preload="auto">
+      <source src="music/song4.mp3.mpeg" type="audio/mpeg">
+    </audio>
+
+  </div>
+
+  <script>
+    function createStars() {
+      const starsContainer = document.getElementById('loadingStars');
+      for (let i = 0; i < 100; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = (Math.random() * 3 + 1) + 'px';
+        star.style.height = star.style.width;
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+    createStars();
+
+    const loadingScreen = document.getElementById('loadingScreen');
+    const mainContent   = document.getElementById('mainContent');
+    const audioMusic    = document.getElementById('bg-music');
+    let musicStarted = false;
+    let contentShown = false;
+
+    function startWebsite() {
+      if (contentShown) return;
+      contentShown = true;
+      loadingScreen.classList.add('hide');
+      mainContent.classList.add('show');
+      if (!musicStarted) {
+        audioMusic.play().then(() => { musicStarted = true; }).catch(e => console.log(e));
+      }
+      setTimeout(() => {
+        setInterval(createHeart, 400);
+        setInterval(createFallingStar, 300);
+        createConfetti();
+        setInterval(createConfetti, 8000);
+        setInterval(createHeroHeart, 1000);
+        createBokehParticles();
+        createClosingParticles();
+      }, 500);
+    }
+
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      const emojis = ["🤍","❤️","🧡","💛","💖","💗","💓","💝"];
+      heart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (10 + Math.random() * 20) + "px";
+      const dur = (9 + Math.random() * 8);
+      heart.style.animationDuration = dur + "s";
+      heart.style.animationDelay = (Math.random() * 2) + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, (dur + 3) * 1000);
+    }
+
+    function createFallingStar() {
+      const star = document.createElement("div");
+      star.classList.add("falling-star");
+      const chars = ["✦","✧","⋆","★","✨","·","•","*"];
+      star.innerHTML = chars[Math.floor(Math.random() * chars.length)];
+      star.style.left = (Math.random() * 105 - 2) + "vw";
+      star.style.fontSize = (7 + Math.random() * 14) + "px";
+      star.style.color = ["#fff","#ffb347","#ffe0a0","#ffd700","#fff5cc"][Math.floor(Math.random()*5)];
+      const dur = (7 + Math.random() * 9);
+      star.style.animationDuration = dur + "s";
+      star.style.animationDelay = (Math.random() * 4) + "s";
+      document.body.appendChild(star);
+      setTimeout(() => { star.remove(); }, (dur + 5) * 1000);
+    }
+
+    function createConfetti() {
+      const heroSection = document.querySelector('.hero');
+      if (!heroSection) return;
+      for (let i = 0; i < 30; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.width = (Math.random() * 8 + 4) + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.background = `hsl(${Math.random() * 60 + 20}, 100%, 60%)`;
+        confetti.style.animationDelay = Math.random() * 5 + 's';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        heroSection.appendChild(confetti);
+        setTimeout(() => { confetti.remove(); }, 5000);
+      }
+    }
+
+    function createHeroHeart() {
+      const heroSection = document.querySelector('.hero');
+      if (!heroSection) return;
+      const heart = document.createElement('div');
+      heart.classList.add('hero-heart');
+      heart.innerHTML = ['❤️','🧡','💛','💖','💗','💓','🎂','✨'][Math.floor(Math.random() * 8)];
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+      heart.style.animationDelay = Math.random() * 2 + 's';
+      heart.style.animationDuration = (Math.random() * 4 + 3) + 's';
+      heroSection.appendChild(heart);
+      setTimeout(() => { heart.remove(); }, 6000);
+    }
+
+    /* Bokeh section 6 */
+    function createBokehParticles() {
+      const container = document.getElementById('toloveParticles');
+      if (!container) return;
+      for (let i = 0; i < 30; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('bokeh-dot');
+        const size = Math.random() * 50 + 20;
+        dot.style.width  = size + 'px';
+        dot.style.height = size + 'px';
+        dot.style.left   = Math.random() * 100 + '%';
+        dot.style.bottom = (Math.random() * 60 - 10) + '%';
+        dot.style.animationDuration = (Math.random() * 14 + 10) + 's';
+        dot.style.animationDelay    = (Math.random() * 8) + 's';
+        container.appendChild(dot);
+      }
+    }
+
+    /* Partikel section 7 */
+    function createClosingParticles() {
+      const container = document.getElementById('closingParticles');
+      if (!container) return;
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.classList.add('closing-particle');
+        const size = Math.random() * 4 + 1;
+        p.style.width  = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left   = Math.random() * 100 + '%';
+        p.style.animationDuration = (Math.random() * 12 + 10) + 's';
+        p.style.animationDelay    = (Math.random() * 10) + 's';
+        p.style.opacity = (Math.random() * 0.6 + 0.2).toString();
+        container.appendChild(p);
+      }
+    }
+
+    loadingScreen.addEventListener('click', startWebsite);
+    loadingScreen.addEventListener('touchstart', startWebsite, { passive: true });
+    document.addEventListener('keydown', function(e) {
+      if (!contentShown && (e.code === 'Space' || e.code === 'Enter')) startWebsite();
+    });
+  </script>
+
+</body>
+</html>
