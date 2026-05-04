@@ -513,6 +513,9 @@ section{
   color:transparent;
   animation:titleGradient 3s ease-in-out infinite;
   line-height:1;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  letter-spacing: 1px;
 }
 
 @keyframes titleGradient{
@@ -786,6 +789,8 @@ section{
   font-size:70px;
   text-shadow: 0 0 25px rgba(255,180,71,0.5), 0 0 50px rgba(255,180,71,0.2);
   display:inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  letter-spacing: 1px;
 }
 
 .message-wrapper{
@@ -893,149 +898,245 @@ section{
   text-shadow:0 0 10px rgba(0,0,0,0.3);
 }
 
-/* ========== SECTION 5 - EDITORIAL ========== */
-.editorial-section{
-  position:relative;
-  width:100%;
-  min-height:100vh;
-  background:#f5f0e8;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  padding:60px 0;
+/* ========== SECTION 5 - EDITORIAL (FOTO DIPERBESAR & DIGESER KE BAWAH) ========== */
+.editorial-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: #f5f0e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 60px 0;
 }
 
-.editorial-section::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:radial-gradient(ellipse at 10% 20%, rgba(255,180,71,0.08) 0%, transparent 60%),
-                  radial-gradient(ellipse at 90% 80%, rgba(255,100,100,0.06) 0%, transparent 60%);
-  pointer-events:none;
+.editorial-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 10% 20%, rgba(255,180,71,0.08) 0%, transparent 60%),
+              radial-gradient(ellipse at 90% 80%, rgba(255,100,100,0.06) 0%, transparent 60%);
+  pointer-events: none;
 }
 
-.editorial-inner{
-  position:relative;
-  z-index:1;
-  width:100%;
-  max-width:1100px;
-  padding:0 50px;
-  display:flex;
-  gap:60px;
-  align-items:flex-start;
+.editorial-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1100px;
+  padding: 0 50px;
+  display: flex;
+  gap: 60px;
+  align-items: flex-start;
 }
 
-.editorial-left{
-  flex:1;
-  min-width:0;
+.editorial-left {
+  flex: 1;
+  min-width: 0;
 }
 
-.editorial-heading{
-  display:flex;
-  align-items:baseline;
-  flex-wrap:wrap;
-  gap:0 8px;
-  margin-bottom:28px;
-  line-height:1;
+.editorial-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  margin-bottom: 28px;
+  line-height: 1;
 }
 
-.editorial-the{
-  font-family:'Cormorant Garamond', serif;
-  font-size:clamp(28px, 4vw, 52px);
-  font-weight:300;
-  font-style:italic;
-  color:#1a1a1a;
-  letter-spacing:1px;
+.editorial-the {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 300;
+  font-style: italic;
+  color: #1a1a1a;
+  letter-spacing: 1px;
 }
 
-.editorial-number-big{
-  font-family:'Cormorant Garamond', serif;
-  font-size:clamp(90px, 14vw, 180px);
-  font-weight:300;
-  color:#1a1a1a;
-  line-height:0.85;
-  letter-spacing:-4px;
-  display:inline-block;
-  position:relative;
-  top:10px;
+.editorial-number-big {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(90px, 14vw, 180px);
+  font-weight: 300;
+  color: #1a1a1a;
+  line-height: 0.85;
+  letter-spacing: -4px;
+  display: inline-block;
+  position: relative;
+  top: 10px;
 }
 
-.editorial-number-big::after{
-  content:'';
-  position:absolute;
-  top:10%;
-  left:50%;
-  width:3px;
-  height:100%;
-  background:#1a1a1a;
-  transform:rotate(20deg) translateX(-50%);
-  transform-origin:top center;
+.editorial-number-big::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 3px;
+  height: 100%;
+  background: #1a1a1a;
+  transform: rotate(20deg) translateX(-50%);
+  transform-origin: top center;
 }
 
-.editorial-on{
-  font-family:'Cormorant Garamond', serif;
-  font-size:clamp(22px, 3vw, 40px);
-  font-weight:300;
-  font-style:italic;
-  color:#1a1a1a;
-  letter-spacing:1px;
+.editorial-on {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(22px, 3vw, 40px);
+  font-weight: 300;
+  font-style: italic;
+  color: #1a1a1a;
+  letter-spacing: 1px;
 }
 
-.editorial-subtitle{
-  font-family:'Poppins', sans-serif;
-  font-size:clamp(13px, 1.4vw, 17px);
-  font-weight:700;
-  color:#1a1a1a;
-  letter-spacing:1px;
-  text-transform:uppercase;
-  margin-bottom:18px;
+.editorial-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(13px, 1.4vw, 17px);
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 18px;
 }
 
-.editorial-body p{
-  font-family:'Poppins', sans-serif;
-  font-size:clamp(12px, 1.2vw, 15px);
-  line-height:1.85;
-  color:#333;
-  margin-bottom:16px;
-  text-align:justify;
+.editorial-body p {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(12px, 1.2vw, 15px);
+  line-height: 1.85;
+  color: #333;
+  margin-bottom: 16px;
+  text-align: justify;
 }
 
-.editorial-body p:last-child{ margin-bottom:0; }
-
-.editorial-right{
-  width:clamp(280px, 40%, 440px);
-  flex-shrink:0;
+.editorial-body p:last-child {
+  margin-bottom: 0;
 }
 
-.collage-grid{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  grid-template-rows:repeat(3, 130px);
-  gap:6px;
+/* COLLAGE - FOTO DIPERBESAR & DIGESER KE BAWAH */
+.editorial-right {
+  width: clamp(320px, 42%, 480px);
+  flex-shrink: 0;
+  margin-top: 50px;   /* DINAИKAN dari 20px menjadi 50px agar lebih turun */
 }
 
-.collage-item{
-  overflow:hidden;
-  border-radius:4px;
+.collage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 180px);
+  gap: 12px;
 }
 
-.collage-item img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  transition:transform 0.4s ease;
+.collage-item {
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
-.collage-item:hover img{ transform:scale(1.07); }
+.collage-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
 
-.c1{ grid-column:1/3; grid-row:1/2; }
-.c2{ grid-column:3/4; grid-row:1/3; }
-.c3{ grid-column:1/2; grid-row:2/4; }
-.c4{ grid-column:2/3; grid-row:2/3; }
-.c5{ grid-column:2/4; grid-row:3/4; }
-.c6{ display:none; }
+.collage-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.collage-item:hover img {
+  transform: scale(1.08);
+}
+
+/* Tata letak bentukan unik (tetap seperti semula) */
+.c1 { grid-column: 1/3; grid-row: 1/2; }
+.c2 { grid-column: 3/4; grid-row: 1/3; }
+.c3 { grid-column: 1/2; grid-row: 2/4; }
+.c4 { grid-column: 2/3; grid-row: 2/3; }
+.c5 { grid-column: 2/4; grid-row: 3/4; }
+.c6 { display: none; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .editorial-inner {
+    gap: 40px;
+    padding: 0 30px;
+  }
+  .collage-grid {
+    grid-template-rows: repeat(3, 150px);
+    gap: 10px;
+  }
+  .editorial-right {
+    width: clamp(300px, 45%, 440px);
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .editorial-section {
+    padding: 50px 0;
+  }
+  .editorial-inner {
+    flex-direction: column;
+    padding: 0 20px;
+    gap: 30px;
+  }
+  .editorial-right {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto 0 auto;  /* di mobile tidak terlalu turun */
+  }
+  .collage-grid {
+    grid-template-rows: repeat(3, 130px);
+    gap: 8px;
+  }
+  .editorial-number-big {
+    font-size: clamp(70px, 20vw, 130px);
+  }
+}
+
+@media (max-width: 550px) {
+  .editorial-inner {
+    padding: 0 18px;
+    gap: 25px;
+  }
+  .collage-grid {
+    grid-template-rows: repeat(3, 110px);
+    gap: 6px;
+  }
+  .editorial-body p {
+    font-size: 12px;
+  }
+  .editorial-subtitle {
+    font-size: 12px;
+  }
+  .editorial-right {
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .editorial-section {
+    padding: 40px 0;
+  }
+  .editorial-inner {
+    padding: 0 16px;
+    gap: 24px;
+  }
+  .collage-grid {
+    grid-template-rows: repeat(3, 95px);
+    gap: 5px;
+  }
+  .editorial-body p {
+    font-size: 11px;
+  }
+  .collage-item {
+    border-radius: 8px;
+  }
+  .editorial-right {
+    margin-top: 10px;
+  }
+}
 
 /* LOADING SCREEN */
 .loading-screen {
