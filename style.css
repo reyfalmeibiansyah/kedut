@@ -613,62 +613,66 @@ section{
   to{ opacity:1; transform:translateY(0); }
 }
 
-.person-wrapper{
-  position:absolute;
-  right:0;
-  top:0;
-  bottom:0;
-  width:45%;
-  max-width:560px;
-  height:100%;
-  z-index:3;
-  overflow:hidden;
-  opacity:0;
-  animation:personSlide 1.8s ease forwards;
-  animation-delay:.8s;
-  border-radius:0;
-  box-shadow:-20px 0 40px rgba(0,0,0,0.3);
-  transition:all 0.4s ease;
+/* ========== POLAROID STYLE - SECTION 3 ========== */
+.person-wrapper {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%) rotate(2deg);
+  width: 420px;
+  height: 560px;
+  z-index: 3;
+  background: #ffffff;
+  padding: 14px 14px 55px 14px;
+  border-radius: 4px;
+  box-shadow: 
+    0 20px 50px rgba(0,0,0,0.4),
+    0 8px 20px rgba(0,0,0,0.25),
+    inset 0 0 0 1px rgba(0,0,0,0.05);
+  opacity: 0;
+  animation: personSlide 1.8s ease forwards;
+  animation-delay: 0.8s;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-@keyframes personSlide{
-  from{ opacity:0; transform:translateX(250px); }
-  to{ opacity:1; transform:translateX(0); }
+.person-wrapper:hover {
+  transform: translateY(-50%) rotate(0deg) scale(1.03);
+  box-shadow: 
+    0 30px 70px rgba(0,0,0,0.45),
+    0 12px 30px rgba(0,0,0,0.3);
 }
 
-.person-wrapper:hover{
-  transform:scale(1.02);
-  box-shadow:-25px 0 50px rgba(0,0,0,0);
+.campus-person {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 2px;
+  display: block;
 }
 
-.campus-person{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center top;
-  transition:transform 0.5s ease;
+/* Selotip di atas polaroid */
+.person-wrapper::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 95px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 3px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  z-index: 5;
+  pointer-events: none;
 }
 
-.person-wrapper:hover .campus-person{
-  transform:scale(1.05);
-}
-
-.person-wrapper::before{
-  content:'';
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:linear-gradient(135deg, rgba(255,180,71,0.2) 0%, transparent 50%);
-  pointer-events:none;
-  z-index:1;
-  animation:lightSweep 5s ease-in-out infinite;
-}
-
-@keyframes lightSweep{
-  0%{ transform:translateX(-100%); }
-  100%{ transform:translateX(100%); }
+/* Animasi masuk */
+@keyframes personSlide {
+  from { opacity: 0; transform: translateY(-50%) translateX(250px) rotate(8deg); }
+  to { opacity: 1; transform: translateY(-50%) rotate(2deg); }
 }
 
 .campus-section::before{
@@ -1014,7 +1018,7 @@ section{
 .editorial-right {
   width: clamp(320px, 42%, 480px);
   flex-shrink: 0;
-  margin-top: 50px;   /* DINAИKAN dari 20px menjadi 50px agar lebih turun */
+  margin-top: 50px;
 }
 
 .collage-grid {
@@ -1048,7 +1052,7 @@ section{
   transform: scale(1.08);
 }
 
-/* Tata letak bentukan unik (tetap seperti semula) */
+/* Tata letak bentukan unik */
 .c1 { grid-column: 1/3; grid-row: 1/2; }
 .c2 { grid-column: 3/4; grid-row: 1/3; }
 .c3 { grid-column: 1/2; grid-row: 2/4; }
@@ -1084,7 +1088,7 @@ section{
   .editorial-right {
     width: 100%;
     max-width: 500px;
-    margin: 20px auto 0 auto;  /* di mobile tidak terlalu turun */
+    margin: 20px auto 0 auto;
   }
   .collage-grid {
     grid-template-rows: repeat(3, 130px);
@@ -1170,13 +1174,12 @@ section{
 .cake-bottom, .cake-middle, .cake-top, .cream, .candle, .flame {
   position: absolute;
   left: 50%;
-  /* transform dasar tidak perlu, karena animasi akan menangani posisi */
   opacity: 0;
   animation: slideInFromLeft 0.7s ease forwards;
   backface-visibility: visible;
 }
 
-/* Ukuran dan gaya layer (sesuai asli) */
+/* Ukuran dan gaya layer */
 .cake-bottom {
   bottom: 0;
   width: 66%;
@@ -1257,7 +1260,7 @@ section{
 .sprinkle:nth-child(13) { top: 39%; left: 52%; background: #FFD700; animation-delay: 1.8s; }
 .sprinkle:nth-child(14) { top: 42%; left: 68%; background: #32CD32; animation-delay: 1.9s; }
 
-/* Animasi slide dari kiri (diperbaiki agar posisi akhir tetap di tengah) */
+/* Animasi slide dari kiri */
 @keyframes slideInFromLeft {
   0% {
     opacity: 0;
@@ -1676,6 +1679,14 @@ section{
 }
 
 /* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+  .person-wrapper {
+    width: 360px;
+    height: 480px;
+    right: 25px;
+  }
+}
+
 @media (max-width: 900px) {
   .rank-title{ font-size:56px; }
   .rank-title .highlight{ font-size:44px; }
@@ -1689,6 +1700,11 @@ section{
   .tolove-right { padding: 50px 30px; }
   .editorial-inner{ gap:40px; padding:0 30px; }
   .collage-grid{ grid-template-rows:repeat(3, 110px); }
+  .person-wrapper {
+    width: 300px;
+    height: 400px;
+    right: 20px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -1707,7 +1723,7 @@ section{
   .photo-row img{ width:170px; height:110px; }
   .memory-text h1{ font-size:90px; }
   .memory-text p{ font-size:24px; }
-  
+
   .campus-section{ 
     display: flex; 
     flex-direction: column;
@@ -1717,7 +1733,7 @@ section{
     overflow-y: auto;
     background: #000;
   }
-  
+
   .campus-section::before {
     content: '';
     position: absolute;
@@ -1733,7 +1749,7 @@ section{
     filter: brightness(0.6) contrast(1.1);
     z-index: 0;
   }
-  
+
   .campus-bg { display: none; }
   .campus-overlay { background: rgba(0,0,0,0.5); z-index: 1; }
   .campus-title{ position: relative; top: auto; left: auto; text-align: center; margin-bottom: 20px; width: 100%; z-index: 2; }
@@ -1744,7 +1760,7 @@ section{
   .campus-card h2::after { left: 50%; transform: translateX(-50%); background: #ffb347; }
   .campus-card p{ font-size: 13px; text-align: center; color: rgba(255,255,255,0.9); }
   .person-wrapper{ display: none; }
-  
+
   .rank-title{ font-size:42px; margin-bottom:25px; }
   .rank-title .highlight{ font-size:32px; }
   .message-wrapper{ flex-direction:column; gap:25px; }
@@ -1755,7 +1771,7 @@ section{
   .polaroid-2{ width:135px; height:155px; left:70px; top:25px; }
   .polaroid-3{ width:138px; height:158px; left:40px; top:55px; }
   .star-divider{ font-size:18px; letter-spacing:10px; }
-  
+
   .tolove-section { flex-direction: column; min-height: auto; }
   .tolove-left { width: 100%; height: 60vw; min-height: 280px; max-height: 400px; }
   .tolove-photo-overlay { background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(232,228,220,0.9) 100%); }
@@ -1766,13 +1782,13 @@ section{
   .tolove-to { font-size: clamp(30px, 8vw, 52px); }
   .tolove-love { font-size: clamp(40px, 11vw, 70px); }
   .tolove-p { font-size: 13px; }
-  
+
   .editorial-section{ padding:50px 0; }
   .editorial-inner{ flex-direction:column; padding:0 20px; gap:30px; }
   .editorial-right{ width:100%; }
   .collage-grid{ grid-template-rows:repeat(3, 100px); gap:5px; }
   .editorial-number-big{ font-size:clamp(70px, 20vw, 130px); }
-  
+
   .closing-bar-top, .closing-bar-bottom { animation:barRevealMobile 1.8s cubic-bezier(0.77,0,0.175,1) forwards; }
   @keyframes barRevealMobile { 0%{ height:50px; } 100%{ height:0; } }
   .closing-content { padding: 0 20px; }
@@ -1851,7 +1867,7 @@ section{
   left: 0;
   width: 100%;
   height: 100%;
-  background: transparent; /* tidak ada background gelap */
+  background: transparent;
   z-index: 20000;
   display: none;
   align-items: center;
@@ -1917,7 +1933,6 @@ section{
   left: -50%;
   width: 200%;
   height: 200%;
-  /* background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 70%); */
   pointer-events: none;
   z-index: 2;
 }
